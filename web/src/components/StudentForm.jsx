@@ -25,6 +25,7 @@ export default function StudentForm({ onAdd }) {
       <label>Status
         <select value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="enrolled">Enrolled</option>
+          <option value="pending">Pending</option>
           <option value="withdrawn">Withdrawn</option>
         </select>
       </label>

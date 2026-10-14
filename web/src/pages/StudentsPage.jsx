@@ -4,19 +4,21 @@ import StudentList from "../components/StudentList.jsx";
 import { getStudents } from "../services/studentsApi.js";
 
 export default function StudentsPage() {
-  const [fullName, setFullName] = useState("");
-  const [studentNumber, setStudentNumber] = useState("");
-  const [program, setProgram] = useState("");
-  const [status, setStatus] = useState("enrolled");
+  const [students, setStudents] = useState([]);
+  const [loadStatus, setLoadStatus] = useState("loading");
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
     getStudents()
       .then((data) => {
         setStudents(data);
-        setStatus("success");
+        setLoadStatus("success");
       })
-      .catch(() => {
-        setStatus("error");
+      .catch((error) => {
+        setLoadError(
+          error instanceof Error ? error.message : String(error)
+        );
+        setLoadStatus("error");
       });
   }, []);
 
@@ -35,23 +37,24 @@ export default function StudentsPage() {
     );
   }
 
-  if (status === "loading") {
+  if (loadStatus === "loading") {
     return <p>Loading students...</p>;
   }
-  if (status === "error") {
-    return <p>Unable to load students.</p>;
+  if (loadStatus === "error") {
+    return <p role="alert">Unable to load students: {loadError}</p>;
   }
 
   return (
-    <main>
+    <main className="students-container">
       <h1>Students</h1>
-      <StudentForm
-        onAdd={addStudent}
-      />
-      <StudentList
-        students={students}
-        onDelete={deleteStudent}
-      />
+      <div className="content-layout">
+        <div className="form-column">
+            <StudentForm onAdd={addStudent}/>
+        </div>
+        <div className="list-column">
+            <StudentList students={students} onDelete={deleteStudent} />
+        </div>
+      </div>
     </main>
   );
 }
