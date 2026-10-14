@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "studentNumber": "2024-001",
+    "fullName": "John Doe",
+    "name": "John Doe",
+    "program": "Bachelor of Science in Computer Science",
+    "status": "Enrolled"
+  },
+  {
+    "id": 2,
+    "studentNumber": "2024-002",
+    "fullName": "Jane Smith",
+    "name": "Jane Smith",
+    "program": "Bachelor of Science in Information Technology",
+    "status": "Pending"
+  }
+]
