@@ -1,14 +1,21 @@
 export async function getStudents() {
-  const response = await fetch('/student.json')
-
+  const response = await fetch("/api/students");
   if (!response.ok) {
-    throw new Error(`Could not load student records (${response.status})`)
+    throw new Error(`Could not load students (${response.status})`);
   }
+  return response.json();
+}
 
-  const students = await response.json()
-  if (!Array.isArray(students)) {
-    throw new Error('Student data must be a list')
+export async function createStudent(payload) {
+  const response = await fetch("/api/students", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    throw new Error(`Could not create student (${response.status})`);
   }
-
-  return students
+  return response.json();
 }
