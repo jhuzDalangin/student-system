@@ -1,57 +1,58 @@
 import { useEffect, useState } from "react";
 import StudentForm from "../components/StudentForm.jsx";
 import StudentList from "../components/StudentList.jsx";
-import {
-  createStudent,
-  deleteStudent as deleteStudentRequest,
-  getStudents,
-} from "../services/studentsApi.js";
+import { createStudent, deleteStudentApi, getStudents } from "../services/studentsApi.js";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState([]);
-  const [loadStatus, setLoadStatus] = useState("loading");
-  const [loadError, setLoadError] = useState("");
+  const [status, setStatus] = useState("loading");
+  const [apiError, setApiError] = useState("");
 
   useEffect(() => {
     getStudents()
       .then((data) => {
         setStudents(data);
-        setLoadStatus("success");
+        setStatus("success");
       })
-      .catch((error) => {
-        setLoadError(
-          error instanceof Error ? error.message : String(error)
-        );
-        setLoadStatus("error");
+      .catch(() => {
+        setStatus("error");
       });
   }, []);
 
-  async function addStudent(student) {
-    const savedStudent = await createStudent(student);
-    setStudents((current) => [savedStudent, ...current]);
-}
+  async function addStudent(studentData) {
+    setApiError("");
+    try {
+      const createdStudent = await createStudent(studentData);
+      setStudents((current) => [createdStudent, ...current]);
+    } catch (error) {
+      setApiError(error.message);
+    }
+  }
 
   async function deleteStudent(id) {
-    await deleteStudentRequest(id);
-    setStudents((current) => current.filter((student) => student.id !== id));
+    setApiError("");
+    try {
+      await deleteStudentApi(id);
+      setStudents((current) => current.filter((student) => student.id !== id));
+    } catch (error) {
+      setApiError(error.message);
+    }
   }
 
-  if (loadStatus === "loading") {
-    return <p>Loading students...</p>;
-  }
-  if (loadStatus === "error") {
-    return <p role="alert">Unable to load students: {loadError}</p>;
-  }
+  if (status === "loading") return <p>Loading students...</p>;
+  if (status === "error") return <p>Unable to load students from the API.</p>;
 
   return (
     <main className="students-container">
       <h1>Students</h1>
+      {apiError && <p role="alert" style={{ color: "#ef4444" }}>{apiError}</p>}
+      
       <div className="content-layout">
         <div className="form-column">
-            <StudentForm onAdd={addStudent}/>
+          <StudentForm onAdd={addStudent} />
         </div>
         <div className="list-column">
-            <StudentList students={students} onDelete={deleteStudent} />
+          <StudentList students={students} onDelete={deleteStudent} />
         </div>
       </div>
     </main>

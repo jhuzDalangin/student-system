@@ -20,11 +20,10 @@ export async function createStudent(payload) {
   return response.json();
 }
 
-export async function deleteStudent(id) {
+export async function deleteStudentApi(id) {
   const response = await fetch(`/api/students/${id}`, {
     method: "DELETE",
   });
-
   if (!response.ok) {
     throw new Error(`Could not delete student (${response.status})`);
   }
