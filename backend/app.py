@@ -47,3 +47,13 @@ def create_student():
   }
   students.append(student)
   return student, 201
+
+@app.delete("/api/students/<int:student_id>")
+def delete_student(student_id):
+    student = next((item for item in students if item["id"] == student_id), None)
+
+    if student is None:
+        return {"error": "Student not found"}, 404
+
+    students.remove(student)
+    return "", 204

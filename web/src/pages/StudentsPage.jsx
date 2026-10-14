@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import StudentForm from "../components/StudentForm.jsx";
 import StudentList from "../components/StudentList.jsx";
-import { getStudents } from "../services/studentsApi.js";
+import {
+  createStudent,
+  deleteStudent as deleteStudentRequest,
+  getStudents,
+} from "../services/studentsApi.js";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState([]);
@@ -22,19 +26,14 @@ export default function StudentsPage() {
       });
   }, []);
 
-  function addStudent(newStudent) {
-    setStudents((current) => [
-      newStudent    ,
-      ...current,
-    ]);
-  }
+  async function addStudent(student) {
+    const savedStudent = await createStudent(student);
+    setStudents((current) => [savedStudent, ...current]);
+}
 
-  function deleteStudent(id) {
-    setStudents((current) =>
-      current.filter(
-        (student) => student.id !== id
-      )
-    );
+  async function deleteStudent(id) {
+    await deleteStudentRequest(id);
+    setStudents((current) => current.filter((student) => student.id !== id));
   }
 
   if (loadStatus === "loading") {
